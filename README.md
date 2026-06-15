@@ -1,0 +1,16 @@
+# YejianLai Learning
+
+This repository collects essays, notes, and experiments around AI, systems, and emerging interaction paradigms.
+
+## Essays
+
+- [Deep Reflection: The Present State of AI, Its Future, and the Total Reconstruction of Interaction Paradigms](./essays/the-present-future-and-total-reconstruction-of-ai-interaction.md)
+
+## Scope
+
+The focus of this repository is long-form thinking and practical exploration, especially around:
+
+- AI agents and long-term memory
+- Open-source model ecosystems
+- Human-AI and AI-to-AI interaction patterns
+- Workflow automation in real business contexts
