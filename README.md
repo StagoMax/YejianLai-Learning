@@ -5,6 +5,7 @@ This repository collects essays, notes, and experiments around AI, systems, and 
 ## Essays
 
 - [Deep Reflection: The Present State of AI, Its Future, and the Total Reconstruction of Interaction Paradigms](./essays/the-present-future-and-total-reconstruction-of-ai-interaction.md)
+- [AI-Native Operating Systems](./essays/ai-native-operating-systems.md)
 
 ## Scope
 
