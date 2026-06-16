@@ -1,124 +1,71 @@
 # AI Infra Inference Engine Learning Path
 
-## A few practical things first
+## Practical foundations
 
-- projects
-- contributions to open-source projects
-- my own projects, which must be practical and directly relevant
-- competitions, though I currently feel their priority is not very high
+If I want to move seriously into AI Infra and inference engines, I cannot rely on vague interest alone. I need real projects, contributions to open-source projects, and my own work that is both practical and directly relevant. Competitions exist, but for now I do not think they should be the top priority.
 
-Write blogs and tutorials, both in Chinese and in English. Build a community, but focus on connecting with people who are truly in the industry rather than people who are still only learning. I need to connect with strong people, not beginners. Beginners are a burden unless they pay to learn. Strong people are what actually help a career.
+I also need to write blogs and tutorials in both Chinese and English, and I need to build a real network. But the key is not simply "building a community." I need to connect with people who are actually in the industry, especially strong practitioners, rather than surrounding myself only with beginners. Beginners may want to learn, but they do not help career development unless there is a clear exchange of value. Strong people, on the other hand, shape trajectory.
 
-Professional certificates depend on the situation. Sometimes there is no certificate that really matches the direction.
+Certificates only matter when there are actually useful certificates for the direction. In some cases there are none that truly match the work. What matters more is staying close to frontier developments, tracking where the industry is moving, and using AI aggressively to amplify personal productivity.
 
-I must pay close attention to the frontier and to changes in the industry.
+## Two kinds of inference optimization
 
-I also must make much better use of AI to amplify my own productivity.
+On the inference side, optimization can roughly be divided into two categories.
 
-## Two categories of inference-side optimization
+The first category is optimization that does not fundamentally change the model algorithm. In other words, it improves performance without requiring the model architecture itself to be redesigned.
 
-Optimization on the inference side can be divided into two broad categories.
+This includes things like low-level memory management, such as PagedAttention and Chunked Prefill, which help balance compute between the Prefill and Decode stages. It also includes operator-level optimization, such as writing more efficient CUDA kernels or using FlashAttention and Triton-based fusion. At the service layer, there are scheduling optimizations like Continuous Batching, where requests are admitted and removed dynamically rather than waiting for a full batch to finish. There is also relatively lightweight memory compression, such as basic KV-cache quantization that usually does not require retraining.
 
-The first category is optimization that does not fundamentally change the model algorithm.
+The second category is algorithm-system co-optimization. This category is much more powerful, but it also requires architectural changes and therefore retraining or fine-tuning. It usually belongs less to ordinary engineering optimization and more to actual algorithm research.
 
-In simpler terms, this kind of optimization improves performance without changing the model architecture itself.
+Examples include replacing MHA with GQA to reduce KV-cache size, moving toward architectures such as MLA that compress KV into latent representations and require specialized operators, adopting Sliding Window Attention so cache length remains fixed, or going further and leaving the Transformer family entirely for architectures such as Mamba or RWKV, which do not rely on sequence-length-growing KV caches at all.
 
-For example:
-
-- low-level memory management: PagedAttention and Chunked Prefill, which balance compute between Prefill and Decode stages
-- operator-level optimization: writing more efficient CUDA kernels, such as FlashAttention-2/3 and Triton-based operator fusion
-- service-level scheduling: Continuous Batching, where requests are added immediately and removed as soon as generation ends instead of waiting for a full batch to finish
-- lossless memory compression: basic KV-cache quantization, usually combined with simple scale factors and not requiring retraining
-
-## The second category: algorithm-system co-optimization
-
-The second category requires architecture changes and therefore retraining or fine-tuning.
-
-This type of optimization can often bring order-of-magnitude gains, but it belongs much more to the category of algorithm research and usually requires cooperation with an algorithm team.
-
-Examples include:
-
-- changing the KV mechanism: replacing MHA with GQA to greatly reduce KV-cache size, or moving toward ideas such as MLA, where KV is compressed into a latent representation and the inference engine needs specialized operators
-- abandoning global KV cache: using Sliding Window Attention, where the model only looks at the most recent N tokens and KV-cache length becomes fixed
-- abandoning the Transformer architecture entirely: moving toward State Space Models such as Mamba or RWKV, where there is no KV cache that grows with sequence length, only a fixed-size hidden state
+This second category is where truly dramatic gains may happen, but it also demands much deeper coordination with algorithm teams.
 
 ## If I want to enter this field now
 
-If I want to enter this field from the current state, I probably have to bet on a future direction. Otherwise, ordinary work that looks the same as everyone else's gives no real advantage.
+If I want to enter this field from my current position, I probably need to bet on a future direction rather than simply doing ordinary work with no clear strategic edge. Average-looking effort is unlikely to produce any real advantage in this area.
 
-## Possible future directions
+One obvious future direction is multi-agent systems, especially long-horizon tasks and workflows that no longer require direct human supervision. But the memory problem is still unresolved.
 
-### Multi-agent systems
+The easiest way to describe the challenge is to compare it to a water system. Intelligence output is the water. The width of the pipe is the scale of intelligence. The speed of the flow is the speed of intelligent output. And the flow cannot stop. That means the future of the field is not only about making the output stronger or faster. It is about making it stable enough to continue without collapse.
 
-Long-horizon tasks and workflows that do not require human supervision are one likely direction.
+That is why I think the biggest problem today is not simply output speed. It is the problem of stable, continuous, reliable intelligent output. Only after that is solved does it make sense to optimize speed and scale more aggressively.
 
-The memory solution is a major unresolved problem.
+## Why stable long-horizon output is still so hard
 
-To simplify the idea, I can use a water-pipe metaphor:
+There are several reasons this remains difficult.
 
-- intelligence output is the water
-- the size of the pipe is the area of intelligence
-- the speed of the water is the speed of intelligence output
-- the water also cannot stop, meaning intelligence must remain stable over time
+First, errors amplify exponentially. Once the system begins drifting in the wrong direction, the mistake grows larger and larger unless it is corrected early enough.
 
-The future problems are all extensions of these constraints.
+Second, long-context behavior is still fragile. With enough context, models begin to hallucinate more easily, drift away from their actual goal, and sometimes fall into loops of endless bug-fixing or pointless optimization. Traditional RAG also does not truly solve the problem because it still lacks strong understanding of temporal logic, causality, and abstract long-term intent.
 
-### The biggest current problem
+Third, models still lack robust feedback and validation loops. A model needs the right tools to perceive the world, verify whether what it did was correct, and obtain feedback that can guide the next step. Without that loop, it is very hard to sustain meaningful long-range progress.
 
-The biggest current problem is not just output speed. It is stable and continuous intelligent output.
+Once you view the problem this way, it becomes hard to believe that traditional Transformer optimization alone will solve it at the root. That does not mean the current architecture is useless. It means there may be a ceiling on what these optimizations can fundamentally achieve.
 
-How do we form an effective loop of ongoing intelligence output without collapse?
+## The architecture dilemma
 
-Only after solving that should optimization of speed and scale really become the next step.
+If the root problem really does require architectural change, then another dilemma appears immediately.
 
-## What causes this problem now?
+Training a new architecture is extremely expensive. And I do not have elite credentials or top-tier institutional support. Even if I came up with something genuinely new, the likely outcome might simply be rebuilding a team from scratch while larger organizations with stronger resources absorb the advantage.
 
-### 1. Exponential amplification of errors
+One possible path would be to hand a new architecture to a major company in exchange for reputation, attribution, and financial upside. But is that really worth it?
 
-Once an error happens, the direction has already drifted. If the system does not correct itself in time, the error gets amplified indefinitely.
+Without top-level compute clusters, even small-model experimentation takes far longer than it would inside a major lab. At the same time, I do not currently have enough capital, and fundraising is not realistic in the short term.
 
-### 2. Long context easily creates hallucination
+That is why the most pragmatic path still seems to be entering a relevant company first, then finding ways to gain access to compute resources and experimental space from within.
 
-With very long context, the model easily drifts from the goal, gradually forgets what it was trying to achieve, and falls into cycles of bug fixing and endless optimization.
+## How I should learn
 
-Traditional RAG also lacks real understanding of temporal logic and causality, and abstract goals are often not represented clearly enough.
+I also do not think I should follow a traditional slow and fully systematic study path.
 
-### 3. Feedback and validation loops
+AI tools are already strong enough that if I insist on perfect systematic learning before building anything, I may only slow down my ability to produce real work and practical results. Still, I do need a broad enough understanding to avoid being blind.
 
-The model needs the right tools so that it can gain perception of the world, validate what happened, obtain feedback, and push itself forward step by step toward the goal.
+There are two things that feel especially important.
 
-## What follows from that?
+First, I need to understand the principles behind frontier models. Without that, it is hard to design inference engines intelligently. Ideally, I should not just read papers passively. I should write my own summaries and build my own understanding.
 
-If these problems are to be solved, then architecture itself has to change.
+Second, I need to map the entire AI Infra chain. I do not need mastery of every component right away. What I need first is a rough but coherent understanding of all the major parts, enough to become competent across the whole chain and then choose one direction to go deep on.
 
-No amount of optimization on top of the traditional Transformer seems likely to solve this problem at the root.
-
-But training a new architecture is very expensive.
-
-And I do not have top-tier credentials. Even if I invented a new architecture, I might only end up rebuilding a team from scratch, while larger companies already have complete resources and could easily absorb the advantage.
-
-One possible path would be to hand the architecture to a major company in exchange for reputation and some upside. But is that really worth it?
-
-Without top-level compute clusters, even training a small model takes many times longer than it would inside a major company.
-
-At the same time, I currently do not have enough capital and cannot easily raise funding.
-
-So the pragmatic strategy is still to first get into a relevant company, and then see whether I can apply for compute resources to run experiments from the inside.
-
-## How should I learn?
-
-I do not think I should learn by following a traditional slow and systematic path.
-
-AI tools are already powerful. If I insist on fully systematic study first, I may slow down my ability to produce actual results and real practice.
-
-That said, a rough understanding is still necessary.
-
-### 1. Understand frontier model principles
-
-It is necessary to understand the principles of frontier models so that I can design inference engines more effectively.
-
-Ideally, I should directly write my own summary of them.
-
-### 2. Draw an AI Infra chain
-
-I should draw an AI Infra chain, get a rough passing-level understanding of all the major parts, and then go deep into one direction rather than trying to master everything at once.
+That seems much more realistic than pretending I can learn everything at once.
