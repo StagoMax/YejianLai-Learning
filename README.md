@@ -10,6 +10,7 @@ This repository collects essays, notes, and experiments around AI, systems, and 
 - [Building an Open System on Top of Gemma, Then Creating a Vertical Application in a Specific Domain](./essays/building-an-open-system-on-top-of-gemma.md)
 - [World Models, Post-Training RL, Evaluation, High-Quality Data Labeling, and Evaluation Tooling](./essays/world-models-post-training-rl-and-evaluation-tooling.md)
 - [Career Choice](./essays/career-choice.md)
+- [AI Infra Inference Engine Learning Path](./essays/ai-infra-inference-engine-learning-path.md)
 
 ## Scope
 
