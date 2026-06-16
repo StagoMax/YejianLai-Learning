@@ -6,6 +6,8 @@ This repository collects essays, notes, and experiments around AI, systems, and 
 
 - [Deep Reflection: The Present State of AI, Its Future, and the Total Reconstruction of Interaction Paradigms](./essays/the-present-future-and-total-reconstruction-of-ai-interaction.md)
 - [AI-Native Operating Systems](./essays/ai-native-operating-systems.md)
+- [Architecture and Functional Design](./essays/architecture-and-functional-design.md)
+- [Building an Open System on Top of Gemma, Then Creating a Vertical Application in a Specific Domain](./essays/building-an-open-system-on-top-of-gemma.md)
 
 ## Scope
 
