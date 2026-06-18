@@ -11,6 +11,7 @@ This repository collects essays, notes, and experiments around AI, systems, and 
 - [World Models, Post-Training RL, Evaluation, High-Quality Data Labeling, and Evaluation Tooling](./essays/world-models-post-training-rl-and-evaluation-tooling.md)
 - [Career Choice](./essays/career-choice.md)
 - [AI Infra Inference Engine Learning Path](./essays/ai-infra-inference-engine-learning-path.md)
+- [NVIDIA NVL72 Summary](./essays/nvidia-nvl72-summary.md)
 
 ## Scope
 
